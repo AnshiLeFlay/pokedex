@@ -8,25 +8,41 @@ import PokemonCard from "../PokemonCard/PokemonCard";
 import Search from "antd/es/input/Search";
 
 const App: React.FC = () => {
+    //const [search, setSearch] = useState<string>("");
+    const [searchedValue, setSearchedValue] = useState<Array<any>>([]);
     const [pageSize, setPageSize] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const pokemons = useSelector((store) => store.pokemons);
+    //const [data, setData] = useState<any>();
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getPokemons(100000, 0));
+        //setData(pokemons); //возможно можно сделать лучше
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handlePageSize = (current: number, size: number) => {
-        //dispatch(getPokemons(size, current * size - size));
-
         setCurrentPage(current);
         setPageSize(size);
     };
 
     const onSearch = (value: string) => {
-        console.log(value);
+        if (value !== "") {
+            setSearchedValue(
+                pokemons?.results
+                    ?.filter((elem: any) =>
+                        elem.name.includes(value.toLowerCase())
+                    )
+                    .slice(
+                        currentPage * pageSize - pageSize,
+                        currentPage * pageSize
+                    )
+            );
+            setCurrentPage(1);
+        } else {
+            setSearchedValue([]);
+        }
     };
 
     const handleChange = (value: string) => {
@@ -58,7 +74,14 @@ const App: React.FC = () => {
                     xl: 6,
                     xxl: 3,
                 }}
-                dataSource={pokemons?.results?.slice(currentPage*pageSize - pageSize, currentPage*pageSize)}
+                dataSource={
+                    searchedValue.length === 0
+                        ? pokemons?.results?.slice(
+                              currentPage * pageSize - pageSize,
+                              currentPage * pageSize
+                          )
+                        : searchedValue
+                }
                 renderItem={(item: any) => {
                     //можно оптимизировать
                     const buffer = item.url.split("/");
@@ -73,7 +96,11 @@ const App: React.FC = () => {
             <Pagination
                 onChange={handlePageSize}
                 defaultCurrent={1}
-                total={pokemons?.count}
+                total={
+                    searchedValue.length > 0
+                        ? searchedValue.length
+                        : pokemons?.count
+                }
                 pageSizeOptions={[10, 20, 50]}
             />
         </>
