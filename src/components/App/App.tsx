@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { List, Pagination, Select } from "antd";
 import { getPokemons } from "../../services/actions";
 import { useDispatch, useSelector } from "../../services/hooks";
@@ -8,18 +8,21 @@ import PokemonCard from "../PokemonCard/PokemonCard";
 import Search from "antd/es/input/Search";
 
 const App: React.FC = () => {
+    const [pageSize, setPageSize] = useState<number>(10);
+    const [currentPage, setCurrentPage] = useState<number>(1);
     const pokemons = useSelector((store) => store.pokemons);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getPokemons(10, 0));
+        dispatch(getPokemons(100000, 0));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handlePageSize = (current: number, size: number) => {
-        //очистить стор
-        
-        dispatch(getPokemons(size, current * size - size));
+        //dispatch(getPokemons(size, current * size - size));
+
+        setCurrentPage(current);
+        setPageSize(size);
     };
 
     const onSearch = (value: string) => {
@@ -55,7 +58,7 @@ const App: React.FC = () => {
                     xl: 6,
                     xxl: 3,
                 }}
-                dataSource={pokemons?.results}
+                dataSource={pokemons?.results?.slice(currentPage*pageSize - pageSize, currentPage*pageSize)}
                 renderItem={(item: any) => {
                     //можно оптимизировать
                     const buffer = item.url.split("/");

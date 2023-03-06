@@ -35,8 +35,8 @@ const PokemonCard: React.FC<ICard> = (props) => {
             </div>
             <div>{pokemon?.types.map((elem: any) => `${elem.type.name} `)}</div>
             <div>
-                {pokemon?.stats.map( (elem: any) => (
-                    <p>{elem.stat.name}: {elem.base_stat}</p>
+                {pokemon?.stats.map( (elem: any, index: number) => (
+                    <p key={`${props.id}_${index}`}>{elem.stat.name}: {elem.base_stat}</p>
                 ))}
             </div>
         </Card>
