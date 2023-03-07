@@ -1,5 +1,13 @@
-import { getPokemonRequest, getPokemonsRequest } from "../../utils/api";
 import {
+    getPokemonRequest,
+    getPokemonsByTypeRequest,
+    getPokemonsRequest,
+} from "../../utils/api";
+import {
+    CLEAR_SEARCH,
+    GET_POKEMONS_BY_TYPE_FAILED,
+    GET_POKEMONS_BY_TYPE_REQUEST,
+    GET_POKEMONS_BY_TYPE_SUCCESS,
     GET_POKEMONS_FAILED,
     GET_POKEMONS_REQUEST,
     GET_POKEMONS_SUCCESS,
@@ -36,6 +44,24 @@ export interface IGetPokemonFailed {
     readonly type: typeof GET_POKEMON_FAILED;
 }
 
+export interface IGetPokemonsByTypeRequest {
+    readonly type: typeof GET_POKEMONS_BY_TYPE_REQUEST;
+}
+
+export interface IGetPokemonsByTypeSuccess {
+    readonly type: typeof GET_POKEMONS_BY_TYPE_SUCCESS;
+    status: string;
+    pokemons: any;
+}
+
+export interface IGetPokemonsByTypeFailed {
+    readonly type: typeof GET_POKEMONS_BY_TYPE_FAILED;
+}
+
+export interface IClearSearch {
+    readonly type: typeof CLEAR_SEARCH;
+}
+
 //types
 export type TActions =
     | IGetPokemonsRequest
@@ -43,7 +69,11 @@ export type TActions =
     | IGetPokemonsFailed
     | IGetPokemonRequest
     | IGetPokemonSuccess
-    | IGetPokemonFailed;
+    | IGetPokemonFailed
+    | IGetPokemonsByTypeRequest
+    | IGetPokemonsByTypeSuccess
+    | IGetPokemonsByTypeFailed
+    | IClearSearch;
 
 //enhancers
 export const getPokemons = (limit: number, offset: number) => {
@@ -57,46 +87,6 @@ export const getPokemons = (limit: number, offset: number) => {
                     type: GET_POKEMONS_SUCCESS,
                     pokemons: res,
                 });
-                //очистить store.data
-                /*
-                res.results.forEach((item: any) => {
-                    const buffer: Array<any> = item.url.split("/");
-                    const id: number = buffer[buffer.length - 2];
-                    const { getState } = store;
-                    const pokemonsData = getState().data;
-                    console.log(pokemonsData);
-
-                    if (
-                        pokemonsData.find((elem: any) => elem.id === id) ===
-                        undefined
-                    ) {
-                        dispatch({
-                            type: GET_POKEMON_REQUEST,
-                        });
-                        getPokemonRequest(id).then((res2) => {
-                            if (res2) {
-                                //типизировать покемона
-                                const pokemonData = {
-                                    id: res2.id,
-                                    name: res2.name,
-                                    types: res2.types,
-                                    stats: res2.stats,
-                                    avatar: res2?.sprites?.other?.dream_world
-                                        ?.front_default,
-                                };
-                                dispatch({
-                                    type: GET_POKEMON_SUCCESS,
-                                    data: pokemonData,
-                                });
-                            } else {
-                                dispatch({
-                                    type: GET_POKEMON_FAILED,
-                                });
-                            }
-                        });
-                    }
-                });
-                */
             } else {
                 dispatch({
                     type: GET_POKEMONS_FAILED,
@@ -107,11 +97,11 @@ export const getPokemons = (limit: number, offset: number) => {
 };
 
 export const getPokemon = (id: number) => {
-    return function (dispatch: AppDispatch) {
+    return async function (dispatch: AppDispatch) {
         dispatch({
             type: GET_POKEMON_REQUEST,
         });
-        getPokemonRequest(id).then((res) => {
+        await getPokemonRequest(id).then((res) => {
             if (res) {
                 //типизировать покемона
                 const pokemonData = {
@@ -130,6 +120,40 @@ export const getPokemon = (id: number) => {
                     type: GET_POKEMON_FAILED,
                 });
             }
+        });
+    };
+};
+
+export const getPokemonsByType = (types: Array<string>) => {
+    return function (dispatch: AppDispatch) {
+        dispatch({
+            type: GET_POKEMONS_BY_TYPE_REQUEST,
+        });
+
+        types.forEach(async (type, index) => {
+            console.log("trying to find - ", type);
+            await getPokemonsByTypeRequest(type).then((res) => {
+                console.log("resolved - ", type);
+                if (res) {
+                    let buffer = [];
+                    for (let i = 0; i < res.pokemon.length; i++) {
+                        buffer.push({
+                            name: res.pokemon[i].pokemon.name,
+                            url: res.pokemon[i].pokemon.url,
+                        });
+                    }
+
+                    dispatch({
+                        type: GET_POKEMONS_BY_TYPE_SUCCESS,
+                        pokemons: buffer,
+                        status: types.length - 1 === index ? "done" : "pending",
+                    });
+                } else {
+                    dispatch({
+                        type: GET_POKEMONS_BY_TYPE_FAILED,
+                    });
+                }
+            });
         });
     };
 };

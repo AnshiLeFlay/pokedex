@@ -1,5 +1,9 @@
 import { TActions } from "../actions";
 import {
+    CLEAR_SEARCH,
+    GET_POKEMONS_BY_TYPE_FAILED,
+    GET_POKEMONS_BY_TYPE_REQUEST,
+    GET_POKEMONS_BY_TYPE_SUCCESS,
     GET_POKEMONS_FAILED,
     GET_POKEMONS_REQUEST,
     GET_POKEMONS_SUCCESS,
@@ -22,6 +26,12 @@ interface TInitialState {
     pokemons: any; //типизировать ответ API
     data: Array<any> | [];
     tags: Array<{ type: string; color: string; icon?: string }>;
+    search: {
+        status: boolean;
+        count: boolean;
+        failed: boolean;
+        buffer: Array<any>;
+    };
 }
 
 const initialState: TInitialState = {
@@ -51,6 +61,7 @@ const initialState: TInitialState = {
         { type: "shadow", color: "#040706" },
         { type: "unknown", color: "" },
     ],
+    search: { status: false, count: false, failed: false, buffer: [] },
 };
 
 export const appReducer = (
@@ -81,7 +92,7 @@ export const appReducer = (
         }
         case GET_POKEMON_REQUEST: {
             return {
-                ...state /* надо оптимизировать */,
+                ...state,
                 /*data: [],*/
             };
         }
@@ -100,6 +111,53 @@ export const appReducer = (
             return {
                 ...state,
             };
+        }
+        case GET_POKEMONS_BY_TYPE_REQUEST: {
+            return { ...state };
+        }
+        case GET_POKEMONS_BY_TYPE_SUCCESS: {
+            //action.pokemons с определенным типом
+            //buffer либо пустой либо с другим типом
+
+            const bufCount = state.search.buffer.length;
+            const pokCount = action.pokemons.length;
+            let result = [];
+
+            if (bufCount !== 0 && !state.search.count) {
+                for (let i = 0; i < bufCount; i++) {
+                    for (let j = 0; j < pokCount; j++) {
+                        if (
+                            state.search.buffer[i].pokemon.name ===
+                            action.pokemons[j].pokemon.name
+                        )
+                            result.push(action.pokemons[j]);
+                    }
+                }
+            } else {
+                if (!state.search.count) result = action.pokemons;
+            }
+
+            return {
+                ...state,
+                search: {
+                    buffer: result,
+                    failed: false,
+                    status: action.status === "done" ? true : false,
+                    count: true,
+                },
+            };
+        }
+        case GET_POKEMONS_BY_TYPE_FAILED: {
+            return {
+                ...state,
+                search: { ...state.search, failed: true, status: false },
+            };
+        }
+        case CLEAR_SEARCH: {
+            return {
+                ...state,
+                search: {status: false, failed: false, count: false, buffer: []}
+            }
         }
         default: {
             return {

@@ -1,27 +1,77 @@
 import React, { useEffect, useState } from "react";
 import { List, Pagination, Select, Space } from "antd";
-import { getPokemons } from "../../services/actions";
+import { getPokemons, getPokemonsByType } from "../../services/actions";
 import { useDispatch, useSelector } from "../../services/hooks";
 
-import styles from './app.module.css';
+import styles from "./app.module.css";
 import PokemonCard from "../PokemonCard/PokemonCard";
 import Search from "antd/es/input/Search";
+import { CLEAR_SEARCH } from "../../services/constants";
 
 const { Option } = Select;
 
 const App: React.FC = () => {
+    //filtered array with tags and/or search value
     const [searchedValue, setSearchedValue] = useState<Array<any>>([]);
+    //tags search array
+    const searchByTags = useSelector((store) => store.search);
+    //search string
+    const [needle, setNeedle] = useState<string>("");
+
+    //pagination values
     const [pageSize, setPageSize] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
+
+    //all pokemons
     const pokemons = useSelector((store) => store.pokemons);
+    //pokemons types
     const tags = useSelector((store) => store.tags);
+
+    //common
     const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(getPokemons(100000, 0));
-        //setData(pokemons); //возможно можно сделать лучше
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (needle === "" && searchByTags.buffer.length === 0) {
+            setSearchedValue([]);
+            return;
+        }
+
+        if (needle === "") {
+            if (
+                searchByTags.buffer.length !== 0 &&
+                searchByTags.status === true
+            ) {
+                //показать поиск по тегам
+                setSearchedValue(searchByTags.buffer);
+
+                setCurrentPage(1);
+            }
+        } else {
+            let filteredNeedle;
+            if (
+                searchByTags.buffer.length !== 0 &&
+                searchByTags.status === true
+            ) {
+                filteredNeedle = searchByTags.buffer.filter((elem: any) =>
+                    elem.name.includes(needle.toLowerCase())
+                );
+            } else {
+                filteredNeedle = pokemons?.results?.filter((elem: any) =>
+                    elem.name.includes(needle.toLowerCase())
+                );
+            }
+
+            setSearchedValue(filteredNeedle);
+
+            setCurrentPage(1);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchByTags.buffer, searchByTags.status, needle]);
 
     const handlePageSize = (current: number, size: number) => {
         setCurrentPage(current);
@@ -30,40 +80,17 @@ const App: React.FC = () => {
 
     const onSearch = (value: string) => {
         if (value !== "") {
-            setSearchedValue(
-                pokemons?.results
-                    ?.filter((elem: any) =>
-                        elem.name.includes(value.toLowerCase())
-                    )
-                    .slice(
-                        currentPage * pageSize - pageSize,
-                        currentPage * pageSize
-                    )
-            );
-            setCurrentPage(1);
+            setNeedle(value);
         } else {
-            setSearchedValue([]);
+            setNeedle("");
         }
     };
 
-    const handleChange = (value: string) => {
-        console.log(`selected ${value}`);
-        if (value !== '') {
-            //const tagsArr = value.split(',');
-            
-            /*
-            setSearchedValue(
-                pokemons?.results
-                    ?.filter((elem: any) =>
-                        elem.name.includes(value.toLowerCase())
-                    )
-                    .slice(
-                        currentPage * pageSize - pageSize,
-                        currentPage * pageSize
-                    )
-            );
-            setCurrentPage(1);
-            */
+    const handleChange = (tags: any) => {
+        if (tags.length > 0) {
+            dispatch(getPokemonsByType(tags));
+        } else {
+            dispatch({ type: CLEAR_SEARCH });
         }
     };
 
@@ -82,10 +109,18 @@ const App: React.FC = () => {
                 onChange={handleChange}
                 optionLabelProp="label"
             >
-                { tags.map( (elem: any, index: number) => (
-                    <Option value={elem.type} label={elem.type}>
+                {tags.map((elem: any) => (
+                    <Option
+                        key={`${elem.type}`}
+                        value={elem.type}
+                        label={elem.type}
+                    >
                         <Space>
-                            <span className={styles.tag} style={{backgroundColor: elem.color}} aria-label={elem.type}>
+                            <span
+                                className={styles.tag}
+                                style={{ backgroundColor: elem.color }}
+                                aria-label={elem.type}
+                            >
                                 {elem.type}
                             </span>
                         </Space>
@@ -108,7 +143,10 @@ const App: React.FC = () => {
                               currentPage * pageSize - pageSize,
                               currentPage * pageSize
                           )
-                        : searchedValue
+                        : searchedValue.slice(
+                              currentPage * pageSize - pageSize,
+                              currentPage * pageSize
+                          )
                 }
                 renderItem={(item: any) => {
                     //можно оптимизировать
