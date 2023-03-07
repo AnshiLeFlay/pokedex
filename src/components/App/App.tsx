@@ -17,6 +17,8 @@ const App: React.FC = () => {
     const searchByTags = useSelector((store) => store.search);
     //search string
     const [needle, setNeedle] = useState<string>("");
+    //search flag
+    const [sFlag, setSFlag] = useState<boolean>(false);
 
     //pagination values
     const [pageSize, setPageSize] = useState<number>(10);
@@ -36,17 +38,19 @@ const App: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (needle === "" && searchByTags.buffer.length === 0) {
+        if (needle === "" && searchByTags.status === false) {
             setSearchedValue([]);
+            setSFlag(false);
             return;
         }
+
+        setSFlag(true);
 
         if (needle === "") {
             if (
                 searchByTags.buffer.length !== 0 &&
                 searchByTags.status === true
             ) {
-                //показать поиск по тегам
                 setSearchedValue(searchByTags.buffer);
 
                 setCurrentPage(1);
@@ -86,9 +90,7 @@ const App: React.FC = () => {
         }
     };
 
-    const handleChange = (tags: any) => {
-        console.log(tags);
-
+    const handleChange = (tags: Array<string>) => {
         dispatch({ type: CLEAR_SEARCH });
 
         if (tags.length > 0) {
@@ -140,7 +142,8 @@ const App: React.FC = () => {
                     xxl: 3,
                 }}
                 dataSource={
-                    searchedValue.length === 0
+                    //searchedValue.length === 0
+                    !sFlag
                         ? pokemons?.results?.slice(
                               currentPage * pageSize - pageSize,
                               currentPage * pageSize
@@ -164,8 +167,10 @@ const App: React.FC = () => {
             <Pagination
                 onChange={handlePageSize}
                 defaultCurrent={1}
+                current={currentPage}
                 total={
-                    searchedValue.length > 0
+                    //searchedValue.length > 0
+                    sFlag
                         ? searchedValue.length
                         : pokemons?.count
                 }

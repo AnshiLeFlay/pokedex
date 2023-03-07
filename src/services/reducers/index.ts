@@ -58,8 +58,8 @@ const initialState: TInitialState = {
         { type: "dragon", color: "#61cad9" },
         { type: "steel", color: "#42bd94" },
         { type: "failry", color: "#ea1369" },
-        { type: "shadow", color: "#040706" },
-        { type: "unknown", color: "" },
+        /*{ type: "shadow", color: "#040706" },*/
+        /*{ type: "unknown", color: "" },*/
     ],
     search: { status: false, count: false, failed: false, buffer: [] },
 };
