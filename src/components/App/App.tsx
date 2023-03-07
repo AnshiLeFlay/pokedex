@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { List, Pagination, Select } from "antd";
+import { List, Pagination, Select, Space } from "antd";
 import { getPokemons } from "../../services/actions";
 import { useDispatch, useSelector } from "../../services/hooks";
 
-import "./App.css";
+import styles from './app.module.css';
 import PokemonCard from "../PokemonCard/PokemonCard";
 import Search from "antd/es/input/Search";
 
+const { Option } = Select;
+
 const App: React.FC = () => {
-    //const [search, setSearch] = useState<string>("");
     const [searchedValue, setSearchedValue] = useState<Array<any>>([]);
     const [pageSize, setPageSize] = useState<number>(10);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const pokemons = useSelector((store) => store.pokemons);
-    //const [data, setData] = useState<any>();
+    const tags = useSelector((store) => store.tags);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -47,6 +48,23 @@ const App: React.FC = () => {
 
     const handleChange = (value: string) => {
         console.log(`selected ${value}`);
+        if (value !== '') {
+            //const tagsArr = value.split(',');
+            
+            /*
+            setSearchedValue(
+                pokemons?.results
+                    ?.filter((elem: any) =>
+                        elem.name.includes(value.toLowerCase())
+                    )
+                    .slice(
+                        currentPage * pageSize - pageSize,
+                        currentPage * pageSize
+                    )
+            );
+            setCurrentPage(1);
+            */
+        }
     };
 
     return (
@@ -58,12 +76,22 @@ const App: React.FC = () => {
                 style={{ width: 200 }}
             />
             <Select
-                mode="tags"
+                mode="multiple"
                 style={{ width: "100%" }}
-                placeholder="Tags Mode"
+                placeholder="select types"
                 onChange={handleChange}
-                options={[]}
-            />
+                optionLabelProp="label"
+            >
+                { tags.map( (elem: any, index: number) => (
+                    <Option value={elem.type} label={elem.type}>
+                        <Space>
+                            <span className={styles.tag} style={{backgroundColor: elem.color}} aria-label={elem.type}>
+                                {elem.type}
+                            </span>
+                        </Space>
+                    </Option>
+                ))}
+            </Select>
             <List
                 grid={{
                     gutter: 16,
@@ -71,7 +99,7 @@ const App: React.FC = () => {
                     sm: 2,
                     md: 4,
                     lg: 4,
-                    xl: 6,
+                    xl: 5,
                     xxl: 3,
                 }}
                 dataSource={

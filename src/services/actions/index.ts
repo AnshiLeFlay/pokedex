@@ -57,6 +57,46 @@ export const getPokemons = (limit: number, offset: number) => {
                     type: GET_POKEMONS_SUCCESS,
                     pokemons: res,
                 });
+                //очистить store.data
+                /*
+                res.results.forEach((item: any) => {
+                    const buffer: Array<any> = item.url.split("/");
+                    const id: number = buffer[buffer.length - 2];
+                    const { getState } = store;
+                    const pokemonsData = getState().data;
+                    console.log(pokemonsData);
+
+                    if (
+                        pokemonsData.find((elem: any) => elem.id === id) ===
+                        undefined
+                    ) {
+                        dispatch({
+                            type: GET_POKEMON_REQUEST,
+                        });
+                        getPokemonRequest(id).then((res2) => {
+                            if (res2) {
+                                //типизировать покемона
+                                const pokemonData = {
+                                    id: res2.id,
+                                    name: res2.name,
+                                    types: res2.types,
+                                    stats: res2.stats,
+                                    avatar: res2?.sprites?.other?.dream_world
+                                        ?.front_default,
+                                };
+                                dispatch({
+                                    type: GET_POKEMON_SUCCESS,
+                                    data: pokemonData,
+                                });
+                            } else {
+                                dispatch({
+                                    type: GET_POKEMON_FAILED,
+                                });
+                            }
+                        });
+                    }
+                });
+                */
             } else {
                 dispatch({
                     type: GET_POKEMONS_FAILED,
@@ -66,12 +106,12 @@ export const getPokemons = (limit: number, offset: number) => {
     };
 };
 
-export const getPokemon = ( id: number ) => {
+export const getPokemon = (id: number) => {
     return function (dispatch: AppDispatch) {
         dispatch({
             type: GET_POKEMON_REQUEST,
         });
-        getPokemonRequest( id ).then((res) => {
+        getPokemonRequest(id).then((res) => {
             if (res) {
                 //типизировать покемона
                 const pokemonData = {
@@ -79,7 +119,7 @@ export const getPokemon = ( id: number ) => {
                     name: res.name,
                     types: res.types,
                     stats: res.stats,
-                    avatar: res?.sprites?.other?.dream_world?.front_default
+                    avatar: res?.sprites?.other?.dream_world?.front_default,
                 };
                 dispatch({
                     type: GET_POKEMON_SUCCESS,

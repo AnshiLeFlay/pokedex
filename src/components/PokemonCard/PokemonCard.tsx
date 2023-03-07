@@ -17,7 +17,8 @@ const PokemonCard: React.FC<ICard> = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getPokemon(props.id));
+        if (pokemon === undefined) dispatch(getPokemon(props.id));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch, props.id]);
 
     return (
@@ -35,8 +36,10 @@ const PokemonCard: React.FC<ICard> = (props) => {
             </div>
             <div>{pokemon?.types.map((elem: any) => `${elem.type.name} `)}</div>
             <div>
-                {pokemon?.stats.map( (elem: any, index: number) => (
-                    <p key={`${props.id}_${index}`}>{elem.stat.name}: {elem.base_stat}</p>
+                {pokemon?.stats.map((elem: any, index: number) => (
+                    <p key={`${props.id}_${index}`}>
+                        {elem.stat.name}: {elem.base_stat}
+                    </p>
                 ))}
             </div>
         </Card>
