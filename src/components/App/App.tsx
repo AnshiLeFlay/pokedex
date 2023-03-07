@@ -87,10 +87,12 @@ const App: React.FC = () => {
     };
 
     const handleChange = (tags: any) => {
+        console.log(tags);
+
+        dispatch({ type: CLEAR_SEARCH });
+
         if (tags.length > 0) {
             dispatch(getPokemonsByType(tags));
-        } else {
-            dispatch({ type: CLEAR_SEARCH });
         }
     };
 
