@@ -1,3 +1,40 @@
 .pokemon_card_image {
     height: 100px;
 }
+
+.card_avatar_wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 1em;
+}
+
+.card_tag {
+    color: white;
+    padding: 0.25em;
+    min-width: 25%;
+    text-align: center;
+}
+
+.card_tags_wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+}
+
+.card_stats_wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.card_stats_wrapper > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card_stats_wrapper > div > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

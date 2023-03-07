@@ -99,38 +99,40 @@ const App: React.FC = () => {
     };
 
     return (
-        <>
-            <Search
-                placeholder="input search text"
-                allowClear
-                onSearch={onSearch}
-                style={{ width: 200 }}
-            />
-            <Select
-                mode="multiple"
-                style={{ width: "100%" }}
-                placeholder="select types"
-                onChange={handleChange}
-                optionLabelProp="label"
-            >
-                {tags.map((elem: any) => (
-                    <Option
-                        key={`${elem.type}`}
-                        value={elem.type}
-                        label={elem.type}
-                    >
-                        <Space>
-                            <span
-                                className={styles.tag}
-                                style={{ backgroundColor: elem.color }}
-                                aria-label={elem.type}
-                            >
-                                {elem.type}
-                            </span>
-                        </Space>
-                    </Option>
-                ))}
-            </Select>
+        <div className={styles.app_wrapper}>
+            <div>
+                <Search
+                    placeholder="input search text"
+                    allowClear
+                    onSearch={onSearch}
+                    style={{ width: 200 }}
+                />
+                <Select
+                    mode="multiple"
+                    style={{ width: "100%" }}
+                    placeholder="select types"
+                    onChange={handleChange}
+                    optionLabelProp="label"
+                >
+                    {tags.map((elem: any) => (
+                        <Option
+                            key={`${elem.type}`}
+                            value={elem.type}
+                            label={elem.type}
+                        >
+                            <Space>
+                                <span
+                                    className={styles.tag}
+                                    style={{ backgroundColor: elem.color }}
+                                    aria-label={elem.type}
+                                >
+                                    {elem.type}
+                                </span>
+                            </Space>
+                        </Option>
+                    ))}
+                </Select>
+            </div>
             <List
                 grid={{
                     gutter: 16,
@@ -170,13 +172,11 @@ const App: React.FC = () => {
                 current={currentPage}
                 total={
                     //searchedValue.length > 0
-                    sFlag
-                        ? searchedValue.length
-                        : pokemons?.count
+                    sFlag ? searchedValue.length : pokemons?.count
                 }
                 pageSizeOptions={[10, 20, 50]}
             />
-        </>
+        </div>
     );
 };
 

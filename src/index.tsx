@@ -5,6 +5,9 @@ import App from "./components/App/App";
 import reportWebVitals from "./reportWebVitals";
 import { store } from "./services/store";
 import { Provider } from "react-redux";
+import { Layout } from "antd";
+
+const { Header, Footer, Content } = Layout;
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
@@ -13,7 +16,13 @@ const root = ReactDOM.createRoot(
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <App />
+            <Layout>
+                <Header>Header</Header>
+                <Content>
+                    <App />
+                </Content>
+                <Footer>Footer</Footer>
+            </Layout>
         </Provider>
     </React.StrictMode>
 );

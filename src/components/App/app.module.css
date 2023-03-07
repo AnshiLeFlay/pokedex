@@ -42,3 +42,11 @@
     text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
     padding: 10px;
 }
+
+.app_wrapper {
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+}
