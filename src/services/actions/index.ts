@@ -131,9 +131,10 @@ export const getPokemonsByType = (types: Array<string>) => {
         });
 
         types.forEach(async (type, index) => {
-            console.log("trying to find - ", type);
+            //console.log("trying to find - ", type);
             await getPokemonsByTypeRequest(type).then((res) => {
-                console.log("resolved - ", type);
+                //console.log("resolved - ", type);
+                //console.log(res.pokemon.length);
                 if (res) {
                     let buffer = [];
                     for (let i = 0; i < res.pokemon.length; i++) {

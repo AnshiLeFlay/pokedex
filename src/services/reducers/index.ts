@@ -123,12 +123,12 @@ export const appReducer = (
             const pokCount = action.pokemons.length;
             let result = [];
 
-            if (bufCount !== 0 && !state.search.count) {
+            if (bufCount !== 0 && state.search.count === true) {
                 for (let i = 0; i < bufCount; i++) {
                     for (let j = 0; j < pokCount; j++) {
                         if (
-                            state.search.buffer[i].pokemon.name ===
-                            action.pokemons[j].pokemon.name
+                            state.search.buffer[i].name ===
+                            action.pokemons[j].name
                         )
                             result.push(action.pokemons[j]);
                     }
