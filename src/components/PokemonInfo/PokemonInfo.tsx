@@ -52,20 +52,23 @@ const PokemonInfo: React.FC<IPokemonInfo> = (props) => {
                         <Col span={24}>
                             <Title level={4}>Type</Title>
                             <div className={styles.tags_wrapper}>
-                                {pokemon?.types.map((elem: any) => (
-                                    <span
-                                        key={`${pokemon?.name}_${elem.type.name}`}
-                                        className={styles.info_tag}
-                                        style={{
-                                            backgroundColor: tags.find(
-                                                (tag) =>
-                                                    tag.type === elem.type.name
-                                            )?.color,
-                                        }}
-                                    >
-                                        {elem.type.name}
-                                    </span>
-                                ))}
+                                {pokemon?.types.map(
+                                    (elem: { type: { name: string } }) => (
+                                        <span
+                                            key={`${pokemon?.name}_${elem.type.name}`}
+                                            className={styles.info_tag}
+                                            style={{
+                                                backgroundColor: tags.find(
+                                                    (tag) =>
+                                                        tag.type ===
+                                                        elem.type.name
+                                                )?.color,
+                                            }}
+                                        >
+                                            {elem.type.name}
+                                        </span>
+                                    )
+                                )}
                             </div>
                         </Col>
                     </Row>

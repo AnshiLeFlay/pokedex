@@ -47,7 +47,7 @@ const PokemonCard: React.FC<ICard> = (props) => {
             </div>
             <Divider />
             <div className={styles.card_tags_wrapper}>
-                {pokemon?.types.map((elem: any) => (
+                {pokemon?.types.map((elem: { type: { name: string } }) => (
                     <span
                         key={`${pokemon?.name}_${elem.type.name}`}
                         className={styles.card_tag}
@@ -139,10 +139,3 @@ const PokemonCard: React.FC<ICard> = (props) => {
 };
 
 export default PokemonCard;
-/*
-{pokemon?.stats.map((elem: any, index: number) => (
-    <p key={`${props.id}_${index}`}>
-        {elem.stat.name}<br/>{elem.base_stat}
-    </p>
-))}
-*/

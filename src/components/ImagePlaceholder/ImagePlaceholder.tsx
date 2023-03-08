@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from './imageplaceholder.module.css';
+import styles from "./imageplaceholder.module.css";
 
 const ImagePlaceholder: React.FC = () => {
     return (
@@ -8,7 +8,7 @@ const ImagePlaceholder: React.FC = () => {
             <p>Avatar</p>
             <p>NOT FOUND</p>
         </div>
-    )
-}
+    );
+};
 
 export default ImagePlaceholder;

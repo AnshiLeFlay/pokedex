@@ -78,12 +78,13 @@ const App: React.FC = () => {
                 searchByTags.buffer.length !== 0 &&
                 searchByTags.status === true
             ) {
-                filteredNeedle = searchByTags.buffer.filter((elem: any) =>
+                filteredNeedle = searchByTags.buffer.filter((elem) =>
                     elem.name.includes(needle.toLowerCase())
                 );
             } else {
-                filteredNeedle = pokemons?.results?.filter((elem: any) =>
-                    elem.name.includes(needle.toLowerCase())
+                filteredNeedle = pokemons?.results?.filter(
+                    (elem: { name: string | string[] }) =>
+                        elem.name.includes(needle.toLowerCase())
                 );
             }
 
@@ -135,7 +136,7 @@ const App: React.FC = () => {
                             onChange={handleChange}
                             optionLabelProp="label"
                         >
-                            {tags.map((elem: any) => (
+                            {tags.map((elem) => (
                                 <Option
                                     key={`${elem.type}`}
                                     value={elem.type}
@@ -159,50 +160,48 @@ const App: React.FC = () => {
                 </Row>
             </div>
             <div className={styles.cards_wrapper}>
-            <List
-                grid={{
-                    gutter: 16,
-                    xs: 1,
-                    sm: 2,
-                    md: 4,
-                    lg: 4,
-                    xl: 5,
-                    xxl: 3,
-                }}
-                dataSource={
-                    !sFlag
-                        ? pokemons?.results?.slice(
-                              currentPage * pageSize - pageSize,
-                              currentPage * pageSize
-                          )
-                        : searchedValue.slice(
-                              currentPage * pageSize - pageSize,
-                              currentPage * pageSize
-                          )
-                }
-                renderItem={(item: {url: string}) => {
-                    const buffer = item.url.split("/");
-                    const id: number = parseInt(buffer[buffer.length - 2]);
-                    return (
-                        <List.Item
-                            onClick={() => {
-                                setCurrentPokemon(id);
-                                showModal();
-                            }}
-                        >
-                            <PokemonCard id={id} />
-                        </List.Item>
-                    );
-                }}
-            />
+                <List
+                    grid={{
+                        gutter: 16,
+                        xs: 1,
+                        sm: 2,
+                        md: 4,
+                        lg: 4,
+                        xl: 5,
+                        xxl: 3,
+                    }}
+                    dataSource={
+                        !sFlag
+                            ? pokemons?.results?.slice(
+                                  currentPage * pageSize - pageSize,
+                                  currentPage * pageSize
+                              )
+                            : searchedValue.slice(
+                                  currentPage * pageSize - pageSize,
+                                  currentPage * pageSize
+                              )
+                    }
+                    renderItem={(item: { url: string }) => {
+                        const buffer = item.url.split("/");
+                        const id: number = parseInt(buffer[buffer.length - 2]);
+                        return (
+                            <List.Item
+                                onClick={() => {
+                                    setCurrentPokemon(id);
+                                    showModal();
+                                }}
+                            >
+                                <PokemonCard id={id} />
+                            </List.Item>
+                        );
+                    }}
+                />
             </div>
             <Pagination
                 onChange={handlePageSize}
                 defaultCurrent={1}
                 current={currentPage}
-                total={
-                    sFlag ? searchedValue.length : pokemons?.count
-                }
+                total={sFlag ? searchedValue.length : pokemons?.count}
                 pageSizeOptions={[10, 20, 50]}
             />
 

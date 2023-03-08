@@ -12,14 +12,6 @@ import {
     GET_POKEMON_SUCCESS,
 } from "../constants";
 
-/*
-type TData = {
-    request: boolean;
-    failed: boolean;
-    pokemon: any;
-};
-*/
-
 interface TInitialState {
     requestAPI: boolean;
     failedAPI: boolean;
@@ -58,8 +50,6 @@ const initialState: TInitialState = {
         { type: "dragon", color: "#61cad9" },
         { type: "steel", color: "#42bd94" },
         { type: "failry", color: "#ea1369" },
-        /*{ type: "shadow", color: "#040706" },*/
-        /*{ type: "unknown", color: "" },*/
     ],
     search: { status: false, count: false, failed: false, buffer: [] },
 };
@@ -116,9 +106,6 @@ export const appReducer = (
             return { ...state };
         }
         case GET_POKEMONS_BY_TYPE_SUCCESS: {
-            //action.pokemons с определенным типом
-            //buffer либо пустой либо с другим типом
-
             const bufCount = state.search.buffer.length;
             const pokCount = action.pokemons.length;
             let result = [];
@@ -156,8 +143,13 @@ export const appReducer = (
         case CLEAR_SEARCH: {
             return {
                 ...state,
-                search: {status: false, failed: false, count: false, buffer: []}
-            }
+                search: {
+                    status: false,
+                    failed: false,
+                    count: false,
+                    buffer: [],
+                },
+            };
         }
         default: {
             return {

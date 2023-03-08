@@ -15,7 +15,7 @@ import {
     GET_POKEMON_REQUEST,
     GET_POKEMON_SUCCESS,
 } from "../constants";
-import { AppDispatch } from "../types";
+import { AppDispatch, IPokemon } from "../types";
 
 //interfaces
 export interface IGetPokemonsRequest {
@@ -103,8 +103,7 @@ export const getPokemon = (id: number) => {
         });
         await getPokemonRequest(id).then((res) => {
             if (res) {
-                //типизировать покемона
-                const pokemonData = {
+                const pokemonData: IPokemon = {
                     id: res.id,
                     name: res.name,
                     types: res.types,
@@ -115,7 +114,9 @@ export const getPokemon = (id: number) => {
                     weight: res.weight,
                     abilities: res.abilities,
                 };
+                //alternative avatar
                 //res?.sprites?.other?.dream_world?.front_default
+
                 dispatch({
                     type: GET_POKEMON_SUCCESS,
                     data: pokemonData,
