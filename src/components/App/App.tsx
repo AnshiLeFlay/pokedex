@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { List, Pagination, Select, Space } from "antd";
+import { Col, List, Modal, Pagination, Row, Select, Space } from "antd";
 import { getPokemons, getPokemonsByType } from "../../services/actions";
 import { useDispatch, useSelector } from "../../services/hooks";
 
@@ -7,6 +7,7 @@ import styles from "./app.module.css";
 import PokemonCard from "../PokemonCard/PokemonCard";
 import Search from "antd/es/input/Search";
 import { CLEAR_SEARCH } from "../../services/constants";
+import PokemonInfo from "../PokemonInfo/PokemonInfo";
 
 const { Option } = Select;
 
@@ -31,6 +32,22 @@ const App: React.FC = () => {
 
     //common
     const dispatch = useDispatch();
+
+    /*logic for modals*/
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [currentPokemon, setCurrentPokemon] = useState<number>(0);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     useEffect(() => {
         dispatch(getPokemons(100000, 0));
@@ -100,39 +117,48 @@ const App: React.FC = () => {
 
     return (
         <div className={styles.app_wrapper}>
-            <div>
-                <Search
-                    placeholder="input search text"
-                    allowClear
-                    onSearch={onSearch}
-                    style={{ width: 200 }}
-                />
-                <Select
-                    mode="multiple"
-                    style={{ width: "100%" }}
-                    placeholder="select types"
-                    onChange={handleChange}
-                    optionLabelProp="label"
-                >
-                    {tags.map((elem: any) => (
-                        <Option
-                            key={`${elem.type}`}
-                            value={elem.type}
-                            label={elem.type}
+            <div className={styles.toolbar}>
+                <Row>
+                    <Col span={12}>
+                        <Search
+                            placeholder="input search text"
+                            allowClear
+                            onSearch={onSearch}
+                            style={{ width: 200 }}
+                        />
+                    </Col>
+                    <Col span={12}>
+                        <Select
+                            mode="multiple"
+                            style={{ width: "100%" }}
+                            placeholder="select types"
+                            onChange={handleChange}
+                            optionLabelProp="label"
                         >
-                            <Space>
-                                <span
-                                    className={styles.tag}
-                                    style={{ backgroundColor: elem.color }}
-                                    aria-label={elem.type}
+                            {tags.map((elem: any) => (
+                                <Option
+                                    key={`${elem.type}`}
+                                    value={elem.type}
+                                    label={elem.type}
                                 >
-                                    {elem.type}
-                                </span>
-                            </Space>
-                        </Option>
-                    ))}
-                </Select>
+                                    <Space>
+                                        <span
+                                            className={styles.tag}
+                                            style={{
+                                                backgroundColor: elem.color,
+                                            }}
+                                            aria-label={elem.type}
+                                        >
+                                            {elem.type}
+                                        </span>
+                                    </Space>
+                                </Option>
+                            ))}
+                        </Select>
+                    </Col>
+                </Row>
             </div>
+            <div className={styles.cards_wrapper}>
             <List
                 grid={{
                     gutter: 16,
@@ -158,14 +184,20 @@ const App: React.FC = () => {
                 renderItem={(item: any) => {
                     //можно оптимизировать
                     const buffer = item.url.split("/");
+                    const id = buffer[buffer.length - 2];
                     return (
-                        <List.Item>
-                            <PokemonCard id={buffer[buffer.length - 2]} />
+                        <List.Item
+                            onClick={() => {
+                                setCurrentPokemon(id);
+                                showModal();
+                            }}
+                        >
+                            <PokemonCard id={id} />
                         </List.Item>
                     );
                 }}
             />
-
+            </div>
             <Pagination
                 onChange={handlePageSize}
                 defaultCurrent={1}
@@ -176,6 +208,15 @@ const App: React.FC = () => {
                 }
                 pageSizeOptions={[10, 20, 50]}
             />
+
+            <Modal
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={null}
+            >
+                <PokemonInfo id={currentPokemon} />
+            </Modal>
         </div>
     );
 };

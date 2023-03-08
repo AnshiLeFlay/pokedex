@@ -5,6 +5,7 @@ import { getPokemon } from "../../services/actions";
 import { Card, Col, Divider, Row } from "antd";
 
 import styles from "./pokemoncard.module.css";
+import { toUpperCaseFirstLitter } from "../../utils/functions";
 
 interface ICard {
     id: number;
@@ -25,9 +26,9 @@ const PokemonCard: React.FC<ICard> = (props) => {
 
     return (
         <Card
-            title={`${pokemon?.name
-                .charAt(0)
-                .toUpperCase()}${pokemon?.name.slice(1)}`}
+            hoverable
+            loading={ pokemon?.name === undefined }
+            title={ pokemon?.name !== undefined && toUpperCaseFirstLitter(pokemon.name) }
         >
             <div className={styles.card_avatar_wrapper}>
                 <img

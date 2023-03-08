@@ -109,7 +109,11 @@ export const getPokemon = (id: number) => {
                     name: res.name,
                     types: res.types,
                     stats: res.stats,
-                    avatar: res?.sprites?.other?.['official-artwork']?.front_default,
+                    avatar: res?.sprites?.other?.["official-artwork"]
+                        ?.front_default,
+                    height: res.height,
+                    weight: res.weight,
+                    abilities: res.abilities,
                 };
                 //res?.sprites?.other?.dream_world?.front_default
                 dispatch({

@@ -50,3 +50,11 @@
     align-items: center;
     gap: 2em;
 }
+
+.toolbar {
+    width: 100%;
+}
+
+.cards_wrapper {
+    width: 100%;
+}

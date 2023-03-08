@@ -1,0 +1,25 @@
+.pokemon_info_image {
+    width: 100%;
+}
+
+.info_stats_wrapper > div > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tags_wrapper {
+    display: flex;
+    gap: 1em;
+}
+
+.info_tag {
+    color: white;
+    padding: 0.25em;
+    min-width: 25%;
+    text-align: center;
+}
+
+.pl_1 {
+    padding-left: 1em;
+}

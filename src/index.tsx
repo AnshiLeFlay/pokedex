@@ -17,11 +17,11 @@ root.render(
     <React.StrictMode>
         <Provider store={store}>
             <Layout>
-                <Header>Header</Header>
+                <Header></Header>
                 <Content>
                     <App />
                 </Content>
-                <Footer>Footer</Footer>
+                <Footer></Footer>
             </Layout>
         </Provider>
     </React.StrictMode>
