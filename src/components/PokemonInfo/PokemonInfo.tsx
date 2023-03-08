@@ -4,6 +4,7 @@ import { Col, Divider, Row, Typography } from "antd";
 import { toUpperCaseFirstLitter } from "../../utils/functions";
 
 import styles from "./pokemoninfo.module.css";
+import ImagePlaceholder from "../ImagePlaceholder/ImagePlaceholder";
 
 const { Title, Text } = Typography;
 
@@ -28,11 +29,15 @@ const PokemonInfo: React.FC<IPokemonInfo> = (props) => {
             </Row>
             <Row>
                 <Col span={12}>
-                    <img
-                        className={`${styles.pokemon_info_image}`}
-                        alt={pokemon?.name}
-                        src={pokemon?.avatar}
-                    />
+                    {pokemon?.avatar === null ? (
+                        <ImagePlaceholder />
+                    ) : (
+                        <img
+                            className={`${styles.pokemon_info_image}`}
+                            alt={pokemon?.name}
+                            src={pokemon?.avatar}
+                        />
+                    )}
                 </Col>
                 <Col className={styles.pl_1} span={12}>
                     <Row>
@@ -67,9 +72,19 @@ const PokemonInfo: React.FC<IPokemonInfo> = (props) => {
                     <Row>
                         <Col span={24}>
                             <Title level={4}>Abilities</Title>
-                            {pokemon?.abilities.map((ability: any) => (
-                                <Text type="secondary">{ability.ability.name} </Text>
-                            ))}
+                            {pokemon?.abilities.map(
+                                (
+                                    ability: { ability: { name: string } },
+                                    index: number
+                                ) => (
+                                    <Text
+                                        key={`${pokemon?.name}_${ability.ability.name}_${index}`}
+                                        type="secondary"
+                                    >
+                                        {ability.ability.name}{" "}
+                                    </Text>
+                                )
+                            )}
                         </Col>
                     </Row>
                 </Col>

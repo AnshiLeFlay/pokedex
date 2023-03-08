@@ -170,7 +170,6 @@ const App: React.FC = () => {
                     xxl: 3,
                 }}
                 dataSource={
-                    //searchedValue.length === 0
                     !sFlag
                         ? pokemons?.results?.slice(
                               currentPage * pageSize - pageSize,
@@ -181,10 +180,9 @@ const App: React.FC = () => {
                               currentPage * pageSize
                           )
                 }
-                renderItem={(item: any) => {
-                    //можно оптимизировать
+                renderItem={(item: {url: string}) => {
                     const buffer = item.url.split("/");
-                    const id = buffer[buffer.length - 2];
+                    const id: number = parseInt(buffer[buffer.length - 2]);
                     return (
                         <List.Item
                             onClick={() => {
@@ -203,7 +201,6 @@ const App: React.FC = () => {
                 defaultCurrent={1}
                 current={currentPage}
                 total={
-                    //searchedValue.length > 0
                     sFlag ? searchedValue.length : pokemons?.count
                 }
                 pageSizeOptions={[10, 20, 50]}

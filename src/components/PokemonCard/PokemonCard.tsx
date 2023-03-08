@@ -6,6 +6,7 @@ import { Card, Col, Divider, Row } from "antd";
 
 import styles from "./pokemoncard.module.css";
 import { toUpperCaseFirstLitter } from "../../utils/functions";
+import ImagePlaceholder from "../ImagePlaceholder/ImagePlaceholder";
 
 interface ICard {
     id: number;
@@ -27,15 +28,22 @@ const PokemonCard: React.FC<ICard> = (props) => {
     return (
         <Card
             hoverable
-            loading={ pokemon?.name === undefined }
-            title={ pokemon?.name !== undefined && toUpperCaseFirstLitter(pokemon.name) }
+            loading={pokemon?.name === undefined}
+            title={
+                pokemon?.name !== undefined &&
+                toUpperCaseFirstLitter(pokemon.name)
+            }
         >
             <div className={styles.card_avatar_wrapper}>
-                <img
-                    className={`${styles.pokemon_card_image}`}
-                    alt={pokemon?.name}
-                    src={pokemon?.avatar}
-                />
+                {pokemon?.avatar === null ? (
+                    <ImagePlaceholder />
+                ) : (
+                    <img
+                        className={`${styles.pokemon_card_image}`}
+                        alt={pokemon?.name}
+                        src={pokemon?.avatar}
+                    />
+                )}
             </div>
             <Divider />
             <div className={styles.card_tags_wrapper}>
