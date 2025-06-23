@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "../../services/hooks";
+import { useAppSelector as useSelector } from "./../../store/hooks";
 import { Col, Divider, Row, Typography } from "antd";
 import { toUpperCaseFirstLitter } from "../../utils/functions";
 
@@ -14,9 +14,11 @@ interface IPokemonInfo {
 
 const PokemonInfo: React.FC<IPokemonInfo> = (props) => {
     const pokemon = useSelector((store) =>
-        store.data.find((elem) => elem.id.toString() === props.id.toString())
+        store.pokemon.data.find(
+            (elem) => elem.id.toString() === props.id.toString()
+        )
     );
-    const tags = useSelector((store) => store.tags);
+    const tags = useSelector((store) => store.pokemon.tags);
 
     return (
         <>

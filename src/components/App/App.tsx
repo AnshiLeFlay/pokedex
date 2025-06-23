@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Col, List, Modal, Pagination, Row, Select, Space } from "antd";
-import { getPokemons, getPokemonsByType } from "../../services/actions";
-import { useDispatch, useSelector } from "../../services/hooks";
+import {
+    fetchPokemons as getPokemons,
+    fetchPokemonsByType as getPokemonsByType,
+} from "../../store/thunks/pokemonThunks";
+import {
+    useAppDispatch as useDispatch,
+    useAppSelector as useSelector,
+} from "./../../store/hooks";
 
 import styles from "./app.module.css";
 import PokemonCard from "../PokemonCard/PokemonCard";
 import Search from "antd/es/input/Search";
-import { CLEAR_SEARCH } from "../../services/constants";
+import { CLEAR_SEARCH } from "../../store/constants";
 import PokemonInfo from "../PokemonInfo/PokemonInfo";
 
 const { Option } = Select;
@@ -15,7 +21,7 @@ const App: React.FC = () => {
     //filtered array with tags and/or search value
     const [searchedValue, setSearchedValue] = useState<Array<any>>([]);
     //tags search array
-    const searchByTags = useSelector((store) => store.search);
+    const searchByTags = useSelector((store) => store.pokemon.search);
     //search string
     const [needle, setNeedle] = useState<string>("");
     //search flag
@@ -26,9 +32,9 @@ const App: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(1);
 
     //all pokemons
-    const pokemons = useSelector((store) => store.pokemons);
+    const pokemons = useSelector((store) => store.pokemon.pokemons);
     //pokemons types
-    const tags = useSelector((store) => store.tags);
+    const tags = useSelector((store) => store.pokemon.tags);
 
     //common
     const dispatch = useDispatch();
@@ -50,7 +56,7 @@ const App: React.FC = () => {
     };
 
     useEffect(() => {
-        dispatch(getPokemons(100000, 0));
+        dispatch(getPokemons({ limit: 100000, offset: 0 }));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

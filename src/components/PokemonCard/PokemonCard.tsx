@@ -1,7 +1,10 @@
 import React, { useEffect } from "react";
 
-import { useDispatch, useSelector } from "../../services/hooks";
-import { getPokemon } from "../../services/actions";
+import {
+    useAppDispatch as useDispatch,
+    useAppSelector as useSelector,
+} from "./../../store/hooks";
+import { fetchPokemon as getPokemon } from "../../store/thunks/pokemonThunks";
 import { Card, Col, Divider, Row } from "antd";
 
 import styles from "./pokemoncard.module.css";
@@ -14,9 +17,11 @@ interface ICard {
 
 const PokemonCard: React.FC<ICard> = (props) => {
     const pokemon = useSelector((store) =>
-        store.data.find((elem) => elem.id.toString() === props.id.toString())
+        store.pokemon.data.find(
+            (elem) => elem.id.toString() === props.id.toString()
+        )
     );
-    const tags = useSelector((store) => store.tags);
+    const tags = useSelector((store) => store.pokemon.tags);
     const dispatch = useDispatch();
 
     useEffect(() => {
