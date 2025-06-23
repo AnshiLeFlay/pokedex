@@ -125,3 +125,27 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+# IDEs
+.vscode/
+.idea/
+
+# Lock files (если не используешь соответствующий менеджер)
+yarn.lock
+pnpm-lock.yaml
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Test outputs
+coverage/
+test-results/
+playwright-report/
+cypress/videos/
+cypress/screenshots/
+
+# Misc
+.prettiercache
+tsconfig.tsbuildinfo
